@@ -24,6 +24,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.Intent;
 
 import com.example.mikepatterson.homeworkr_actual.JSONParser;
 
@@ -139,7 +140,8 @@ public class MainActivity extends ActionBarActivity {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             Toast.makeText(MainActivity.this, "You Clicked at "+oslist.get(+position).get("name"), Toast.LENGTH_SHORT).show();
-                            
+                            startActivity(new Intent(MainActivity.this, DetailActivity.class));
+
                         }
                     });
 

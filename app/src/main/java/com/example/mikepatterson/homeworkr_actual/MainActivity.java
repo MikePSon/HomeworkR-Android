@@ -57,19 +57,20 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        new JSONParse().execute();
 
         setContentView(R.layout.activity_main);
         oslist = new ArrayList<HashMap<String, String>>();
 
-        Btngetdata = (Button)findViewById(R.id.getdata);
-        Btngetdata.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                new JSONParse().execute();
-
-            }
-        });
+//        Btngetdata = (Button)findViewById(R.id.getdata);
+//        Btngetdata.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View view) {
+//                new JSONParse().execute();
+//
+//            }
+//        });
 
     }
 
@@ -80,11 +81,11 @@ public class MainActivity extends ActionBarActivity {
             super.onPreExecute();
             assign_title_view = (TextView)findViewById(R.id.assign_title);
             assign_due_view = (TextView)findViewById(R.id.assign_due_date);
-            pDialog = new ProgressDialog(MainActivity.this);
-            pDialog.setMessage("Getting Data ...");
-            pDialog.setIndeterminate(false);
-            pDialog.setCancelable(true);
-            pDialog.show();
+//            pDialog = new ProgressDialog(MainActivity.this);
+//            pDialog.setMessage("Getting Assignments ...");
+//            pDialog.setIndeterminate(false);
+//            pDialog.setCancelable(true);
+//            pDialog.show();
 
         }
 
@@ -95,21 +96,14 @@ public class MainActivity extends ActionBarActivity {
 
             // Getting JSON from URL
             JSONObject json = jParser.getJSONFromUrl(url);
-            String TAG = "MIKEY DEBUG, json: ";
-            String debugStr = json.toString();
-            Log.v(TAG, debugStr);
             return json;
         }
         @Override
         protected void onPostExecute(JSONObject json) {
-            pDialog.dismiss();
+//            pDialog.dismiss();
             try {
                 // Getting JSON Array from URL
                 assignArr = json.getJSONArray(TAG_TYPE);
-                String TAG = "MIKEY DEBUG: ";
-                int arrLen = assignArr.length();
-                String debugStr = Integer.toString(arrLen);
-                Log.v(TAG, debugStr);
                 for(int i = 0; i < assignArr.length(); i++){
                     JSONObject c = assignArr.getJSONObject(i);
 
@@ -117,6 +111,9 @@ public class MainActivity extends ActionBarActivity {
                     String assign_title_str = c.getString(TAG_TITLE);
                     String assign_due_str = c.getString(TAG_DUE);
                     String assign_desc_str = c.getString(TAG_DESC);
+                    String assign_complete_bool = c.getString(TAG_COMPLETE);
+
+                    String assign_complete_str = c.getString(TAG_COMPLETE);
 
                     // Adding value HashMap key => value
 
@@ -125,6 +122,7 @@ public class MainActivity extends ActionBarActivity {
                     map.put(TAG_TITLE, assign_title_str);
                     map.put(TAG_DUE, assign_due_str);
                     map.put(TAG_DESC, assign_desc_str);
+                    map.put(TAG_COMPLETE, assign_complete_bool);
 
                     oslist.add(map);
                     list=(ListView)findViewById(R.id.list);
@@ -139,17 +137,25 @@ public class MainActivity extends ActionBarActivity {
 
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Toast.makeText(MainActivity.this, "You Clicked at "+oslist.get(+position).get("name"), Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(MainActivity.this, DetailActivity.class));
-
+//                            Toast.makeText(MainActivity.this, "You Clicked at "+oslist.get(+position).get("name"), Toast.LENGTH_SHORT).show();
+                            String assignName = oslist.get(+position).get("name");
+                            String assignDue = oslist.get(+position).get("start");
+                            String assignNotes = oslist.get(+position).get("notes");
+                            String assignComplete = oslist.get(+position).get("complete");
+                            String assignID = oslist.get(+position).get("id");
+                            Intent i = new Intent(getApplicationContext(),DetailActivity.class);
+                            i.putExtra("assignName",assignName);
+                            i.putExtra("assignDue",assignDue);
+                            i.putExtra("assignNotes",assignNotes);
+                            i.putExtra("assignComplete",assignComplete);
+                            i.putExtra("assignID",assignID);
+                            startActivity(i);
                         }
                     });
-
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
         }
     }
 

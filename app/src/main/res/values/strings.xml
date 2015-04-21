@@ -4,4 +4,10 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_detail">DetailActivity</string>
+
+    <string name="title_holder">Assignment Title</string>
+    <string name="due_holder">Assignment Due Date</string>
+    <string name="notes_holder">Assignment Notes</string>
+    <string name="complete_holder">Assignment Complete?</string>
+    <string name="update_Assignment">Update Assignment</string>
 </resources>

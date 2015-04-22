@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.content.Intent;
@@ -12,20 +13,11 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View.OnClickListener;
-
-import android.app.ProgressDialog;
-
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 
 
 public class DetailActivity extends ActionBarActivity {
@@ -62,24 +54,24 @@ public class DetailActivity extends ActionBarActivity {
     }
 
     private class sendComplete extends AsyncTask<String, String, Boolean> {
-        private ProgressDialog pDialog;
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
+        protected void onPreExecute() {super.onPreExecute();}
 
         @Override
-        protected Boolean doInBackground(String... thisID) {
-
+        protected Boolean doInBackground(String... listOfIDs) {
+            String thisAssignment;
+//            thisAssignment= listOfIDs[0];
+            thisAssignment = "1";
             try {
-//                String thisURL = "http://10.0.2.2:3000/assignments/" + 1 + "/toggleComplete";
-                String thisURL = "enigmatic-wave-8305.herokuapp.com/assignments" + 1 + "/toggleComplete";
+//                String thisURL = "http://10.0.2.2:3000/assignments/" + thisAssignment + "/toggleComplete";
+                String thisURL = "https://enigmatic-wave-8305.herokuapp.com/assignments/" + thisAssignment + "/toggleComplete";
+                String TAG = "This URL: ";
+                Log.v(TAG, thisURL);
                 DefaultHttpClient httpClient = new DefaultHttpClient();
                 HttpPut httpPut = new HttpPut(thisURL);
                 HttpResponse response = httpClient.execute(httpPut);
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+            catch (IOException e) {e.printStackTrace();}
             return true;
         }
         @Override
@@ -90,13 +82,9 @@ public class DetailActivity extends ActionBarActivity {
 
 
     public void completePost(Intent thisIntent, String newVal){
-        String thisName = thisIntent.getStringExtra("assignName");
-        String thisDesc = thisIntent.getStringExtra("assignNotes");
-        String thisDue = thisIntent.getStringExtra("assignDue");
-        String thisCompleteStr = newVal;
         String thisID = thisIntent.getStringExtra("assignID");
-        new sendComplete().execute(thisID);
-
+        sendComplete thisSend = new sendComplete();
+        thisSend.execute(thisID);
     }
 
     public void initVals(Intent thisIntent){
@@ -116,17 +104,14 @@ public class DetailActivity extends ActionBarActivity {
         String thisCompleteStr = thisIntent.getStringExtra("assignComplete");
         CheckBox thisCompleteView = (CheckBox)findViewById(R.id.assignmentComplete);
         Integer boolCheck = thisCompleteStr.indexOf("t");
-        if(boolCheck >= 0){
-            thisCompleteView.setChecked(true);
-        } else{
+        if(boolCheck >= 0){thisCompleteView.setChecked(true);}
+        else{
             thisCompleteView.setChecked(false);
-
             //Reminder Toast for students
 //            Toast.makeText(DetailActivity.this, "Due in x days", Toast.LENGTH_SHORT).show();
         }
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -134,7 +119,6 @@ public class DetailActivity extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.menu_detail, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
